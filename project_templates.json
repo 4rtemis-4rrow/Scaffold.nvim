@@ -1,0 +1,16 @@
+{
+  "python": {
+    "CLI App": {
+      "_meta": {
+        "variables": {
+          "project_name": "myapp",
+          "author": "Your Name"
+        },
+        "pre_gen": ["echo Preparing ${project_name}..."],
+        "post_gen": ["git init", "echo Done."]
+      },
+      "${project_name}/main.py": "print('Welcome to ${project_name} by ${author}')",
+      "${project_name}/README.md": "# ${project_name}\n\nMade by ${author}"
+    }
+  }
+}
