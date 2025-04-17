@@ -11,6 +11,144 @@
       },
       "${project_name}/main.py": "print('Welcome to ${project_name} by ${author}')",
       "${project_name}/README.md": "# ${project_name}\n\nMade by ${author}"
+    },
+    "Flask Web App": {
+      "_meta": {
+        "variables": {
+          "project_name": "flaskapp",
+          "author": "Your Name"
+        },
+        "pre_gen": ["pip install Flask"],
+        "post_gen": ["git init", "echo Done."]
+      },
+      "requirements.txt": "Flask==2.0.0\n",
+      "${project_name}/app.py": "from flask import Flask\n\napp = Flask(__name__)\n\n@app.route('/')\ndef home():\n    return f'Welcome to {project_name}!'\n\nif __name__ == '__main__':\n    app.run(debug=True)",
+      "${project_name}/README.md": "# ${project_name}\n\nMade by ${author}"
+    },
+    "Django Web App": {
+      "_meta": {
+        "variables": {
+          "project_name": "djangoapp",
+          "author": "Your Name"
+        },
+        "pre_gen": ["pip install django", "django-admin startproject ${project_name}"],
+        "post_gen": ["git init", "echo Done."]
+      },
+      "${project_name}/manage.py": "import os\nimport sys\n\nif __name__ == '__main__':\n    os.environ.setdefault('DJANGO_SETTINGS_MODULE', '${project_name}.settings')\n    try:\n        from django.core.management import execute_from_command_line\n    except ImportError as exc:\n        raise ImportError(\n            \"Couldn't import Django. Are you sure it's installed and \"\n            \"available on your PYTHONPATH environment variable? Did you forget to activate a virtual environment?\"\n        ) from exc\n    execute_from_command_line(sys.argv)",
+      "${project_name}/README.md": "# ${project_name}\n\nMade by ${author}"
+    }
+  },
+  
+  "javascript": {
+    "Node.js Express Web App": {
+      "_meta": {
+        "variables": {
+          "project_name": "nodeexpressapp",
+          "author": "Your Name"
+        },
+        "pre_gen": ["npm init -y", "npm install express"],
+        "post_gen": ["git init", "echo Done."]
+      },
+      "package.json": "{\n  \"name\": \"${project_name}\",\n  \"version\": \"1.0.0\",\n  \"description\": \"A Node.js Express app\",\n  \"main\": \"server.js\",\n  \"scripts\": {\n    \"start\": \"node server.js\"\n  },\n  \"author\": \"${author}\",\n  \"license\": \"ISC\"\n}",
+      "${project_name}/server.js": "const express = require('express');\nconst app = express();\n\napp.get('/', (req, res) => {\n  res.send('Welcome to ${project_name}!');\n});\n\napp.listen(3000, () => {\n  console.log('Server running at http://localhost:3000');\n});",
+      "${project_name}/README.md": "# ${project_name}\n\nMade by ${author}"
+    },
+    "React App": {
+      "_meta": {
+        "variables": {
+          "project_name": "reactapp",
+          "author": "Your Name"
+        },
+        "pre_gen": ["npx create-react-app ${project_name}"],
+        "post_gen": ["git init", "echo Done."]
+      },
+      "${project_name}/README.md": "# ${project_name}\n\nMade by ${author}"
+    }
+  },
+  
+  "ruby": {
+    "CLI App": {
+      "_meta": {
+        "variables": {
+          "project_name": "my_ruby_app",
+          "author": "Your Name"
+        },
+        "pre_gen": ["echo Preparing ${project_name}..."],
+        "post_gen": ["git init", "echo Done."]
+      },
+      "${project_name}/main.rb": "puts 'Welcome to ${project_name} by ${author}'",
+      "${project_name}/README.md": "# ${project_name}\n\nMade by ${author}"
+    },
+    "Sinatra Web App": {
+      "_meta": {
+        "variables": {
+          "project_name": "sinatraapp",
+          "author": "Your Name"
+        },
+        "pre_gen": ["gem install sinatra"],
+        "post_gen": ["git init", "echo Done."]
+      },
+      "Gemfile": "source 'https://rubygems.org'\ngem 'sinatra'",
+      "${project_name}/app.rb": "require 'sinatra'\n\nget '/' do\n  'Welcome to ${project_name} by ${author}'\nend",
+      "${project_name}/README.md": "# ${project_name}\n\nMade by ${author}"
+    }
+  },
+  
+  "java": {
+    "Spring Boot Web App": {
+      "_meta": {
+        "variables": {
+          "project_name": "springbootapp",
+          "author": "Your Name"
+        },
+        "pre_gen": ["mvn clean install"],
+        "post_gen": ["git init", "echo Done."]
+      },
+      "pom.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>com.example</groupId>\n  <artifactId>${project_name}</artifactId>\n  <version>0.0.1-SNAPSHOT</version>\n  <name>${project_name}</name>\n  <description>Spring Boot project</description>\n  <dependencies>\n    <dependency>\n      <groupId>org.springframework.boot</groupId>\n      <artifactId>spring-boot-starter-web</artifactId>\n    </dependency>\n  </dependencies>\n  <build>\n    <plugins>\n      <plugin>\n        <groupId>org.springframework.boot</groupId>\n        <artifactId>spring-boot-maven-plugin</artifactId>\n      </plugin>\n    </plugins>\n  </build>\n</project>",
+      "${project_name}/src/main/java/com/example/${project_name}/Application.java": "package com.example.${project_name};\n\nimport org.springframework.boot.SpringApplication;\nimport org.springframework.boot.autoconfigure.SpringBootApplication;\n\n@SpringBootApplication\npublic class Application {\n    public static void main(String[] args) {\n        SpringApplication.run(Application.class, args);\n    }\n}",
+      "${project_name}/README.md": "# ${project_name}\n\nMade by ${author}"
+    }
+  },
+
+  "go": {
+    "CLI App": {
+      "_meta": {
+        "variables": {
+          "project_name": "goapp",
+          "author": "Your Name"
+        },
+        "pre_gen": ["echo Preparing ${project_name}..."],
+        "post_gen": ["git init", "echo Done."]
+      },
+      "${project_name}/main.go": "package main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"Welcome to ${project_name} by ${author}\")\n}",
+      "${project_name}/README.md": "# ${project_name}\n\nMade by ${author}"
+    },
+    "Gin Web App": {
+      "_meta": {
+        "variables": {
+          "project_name": "ginapp",
+          "author": "Your Name"
+        },
+        "pre_gen": ["go get -u github.com/gin-gonic/gin"],
+        "post_gen": ["git init", "echo Done."]
+      },
+      "${project_name}/main.go": "package main\n\nimport (\n    \"github.com/gin-gonic/gin\"\n    \"fmt\"\n)\n\nfunc main() {\n    r := gin.Default()\n    r.GET(\"/\", func(c *gin.Context) {\n        c.String(200, \"Welcome to ${project_name} by ${author}\")\n    })\n    r.Run() // Listen and serve on 0.0.0.0:8080\n}",
+      "${project_name}/README.md": "# ${project_name}\n\nMade by ${author}"
+    }
+  },
+
+  "cpp": {
+    "Console App": {
+      "_meta": {
+        "variables": {
+          "project_name": "cppapp",
+          "author": "Your Name"
+        },
+        "pre_gen": ["echo Preparing ${project_name}..."],
+        "post_gen": ["git init", "echo Done."]
+      },
+      "${project_name}/main.cpp": "#include <iostream>\n\nint main() {\n    std::cout << \"Welcome to ${project_name} by ${author}\" << std::endl;\n    return 0;\n}",
+      "${project_name}/README.md": "# ${project_name}\n\nMade by ${author}"
     }
   }
 }
