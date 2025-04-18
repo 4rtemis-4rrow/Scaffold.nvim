@@ -1,11 +1,14 @@
 local M = {}
 
-local pickers = require("telescope.pickers")
-local finders = require("telescope.finders")
-local actions = require("telescope.actions")
-local action_state = require("telescope.actions.state")
-local conf = require("telescope.config").values
+local config = {
+  picker = "telescope", -- default
+}
 
+function M.setup(user_config)
+  config = vim.tbl_deep_extend("force", config, user_config or {})
+end
+
+-- Load & save functions stay unchanged
 local json = vim.fn.json_decode
 local encode = vim.fn.json_encode
 local mkdir = vim.fn.mkdir
@@ -87,40 +90,74 @@ local function build_project(structure)
   end)
 end
 
+-- Modular picker interface
+local function select_with_picker(title, items, cb)
+  if config.picker == "telescope" then
+    local pickers = require("telescope.pickers")
+    local finders = require("telescope.finders")
+    local conf = require("telescope.config").values
+    local actions = require("telescope.actions")
+    local action_state = require("telescope.actions.state")
+
+    pickers.new({}, {
+      prompt_title = title,
+      finder = finders.new_table { results = items },
+      sorter = conf.generic_sorter({}),
+      attach_mappings = function(bufnr)
+        actions.select_default:replace(function()
+          local selection = action_state.get_selected_entry().value
+          actions.close(bufnr)
+          cb(selection)
+        end)
+        return true
+      end
+    }):find()
+
+  elseif config.picker == "fzf-lua" then
+    require("fzf-lua").fzf_exec(items, {
+      prompt = title .. "> ",
+      actions = {
+        ["default"] = function(selected) cb(selected[1]) end
+      }
+    })
+
+  elseif config.picker == "mini.pick" then
+    local pick = require("mini.pick")
+    pick.start({
+      source = {
+        items = items
+      },
+      prompt = title,
+      action = function(_, item)
+        cb(item)
+      end
+    })
+
+  elseif config.picker == "snacks" then
+    require("snacks").select(items, {
+      prompt = title,
+      format_item = function(item) return item end,
+    }, function(choice)
+      if choice then cb(choice) end
+    end)
+
+  else
+    vim.notify("Unknown picker: " .. tostring(config.picker), vim.log.levels.ERROR)
+  end
+end
+
 function M.create_project()
   local templates = load_templates()
   local languages = vim.tbl_keys(templates)
 
-  pickers.new({}, {
-    prompt_title = "Select Language",
-    finder = finders.new_table { results = languages },
-    sorter = conf.generic_sorter({}),
-    attach_mappings = function(buf1)
-      actions.select_default:replace(function()
-        local lang = action_state.get_selected_entry().value
-        actions.close(buf1)
+  select_with_picker("Select Language", languages, function(lang)
+    local lang_templates = templates[lang]
+    local template_names = vim.tbl_keys(lang_templates)
 
-        local lang_templates = templates[lang]
-        local template_names = vim.tbl_keys(lang_templates)
-
-        pickers.new({}, {
-          prompt_title = "Select Template (" .. lang .. ")",
-          finder = finders.new_table { results = template_names },
-          sorter = conf.generic_sorter({}),
-          attach_mappings = function(buf2)
-            actions.select_default:replace(function()
-              local template = action_state.get_selected_entry().value
-              local structure = lang_templates[template]
-              actions.close(buf2)
-              build_project(structure)
-            end)
-            return true
-          end
-        }):find()
-      end)
-      return true
-    end
-  }):find()
+    select_with_picker("Select Template (" .. lang .. ")", template_names, function(template)
+      build_project(lang_templates[template])
+    end)
+  end)
 end
 
 local function directory_to_table(path)

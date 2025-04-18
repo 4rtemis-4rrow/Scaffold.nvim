@@ -1,19 +1,33 @@
 # Scaffold.nvim
 
-**Scaffold.nvim** is a Neovim plugin for quickly scaffolding new projects using customizable templates. Define once, reuse forever, boost your workflow with smart, language-specific boilerplate generation.
+**Scaffold.nvim** is a Neovim plugin for quickly scaffolding new projects using customizable templates. Define once, reuse forever, and boost your workflow with smart, language-specific boilerplate generation.
+
+---
+
+## Features
+
+- 🧱 Easily scaffold projects from structured templates
+- 🔁 Supports placeholder variables and lifecycle hooks
+- 🔍 Picker-agnostic: works with `telescope.nvim`, `fzf-lua`, `mini.pick`, or `snacks.nvim`
+- 📁 Templates stored in a readable JSON format
 
 ---
 
 ## Installation
 
-Requires **Neovim 0.8+** and **Telescope.nvim**.
+Requires **Neovim 0.8+**.
 
 ### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
 {
   "4rtemis-4rrow/Scaffold.nvim",
-  dependencies = { "nvim-telescope/telescope.nvim" },
+  dependencies = {
+    "nvim-telescope/telescope.nvim",  -- optional
+    "ibhagwan/fzf-lua",               -- optional
+    "echasnovski/mini.pick",          -- optional
+    "tamton-aquib/snacks.nvim",       -- optional
+  },
   cmd = { "Scaffold", "AddTemplate" },
 }
 ```
@@ -23,7 +37,12 @@ Requires **Neovim 0.8+** and **Telescope.nvim**.
 ```lua
 use {
   "4rtemis-4rrow/Scaffold.nvim",
-  requires = { "nvim-telescope/telescope.nvim" },
+  requires = {
+    "nvim-telescope/telescope.nvim",  -- optional
+    "ibhagwan/fzf-lua",               -- optional
+    "echasnovski/mini.pick",          -- optional
+    "tamton-aquib/snacks.nvim",       -- optional
+  },
   cmd = { "Scaffold", "AddTemplate" },
 }
 ```
@@ -32,43 +51,47 @@ use {
 
 ## Setup
 
-No setup required. The plugin is lazy-loaded via the `:Scaffold` and `:AddTemplate` commands.
+```lua
+require("scaffold").setup({
+  picker = "telescope", -- options: "telescope", "fzf-lua", "mini.pick", "snacks"
+})
+```
+
+If no setup is called, the default picker used is `telescope`.
 
 ---
 
 ## Usage
 
-### Create a new project
+### 🚀 Create a new project
 
 ```vim
 :Scaffold
 ```
 
-- Select a language (e.g. Python, Rust, etc.)
-- Choose a template for that language
-- Enter any requested variables (e.g. project name)
-- Choose a destination path
-- Your scaffolded project is created
+- Select a language (e.g. Python, Rust)
+- Choose a template
+- Fill in any placeholder variables
+- Set the destination folder
+- Project is scaffolded instantly!
 
----
-
-### Add a new template
+### 🧩 Add a new template
 
 ```vim
 :AddTemplate <language> <template_name> <path_to_template_folder>
 ```
 
-- `language`: Category (e.g. `rust`, `python`)
-- `template_name`: Name of the template (e.g. `cli`, `web`)
-- `path_to_template_folder`: The folder to turn into a template
+- `language`: Template category (e.g. `rust`)
+- `template_name`: Template name (e.g. `cli`)
+- `path_to_template_folder`: Directory to turn into a reusable template
 
-This recursively saves the folder as a template in `project_templates.json`, capturing all structure and file contents.
+This will recursively serialize the folder into `project_templates.json`, storing file contents and structure.
 
 ---
 
-### Template Format
+## 🧠 Template Format
 
-Each template is stored as nested Lua tables (mirroring folder structure), with optional placeholders:
+Each template is stored as a nested Lua-style JSON structure:
 
 ```json
 {
@@ -87,22 +110,39 @@ Each template is stored as nested Lua tables (mirroring folder structure), with 
 }
 ```
 
-- `${project_name}` will be prompted and interpolated into files and folder names
+- `${variable}` placeholders are replaced during generation
 - `_meta` supports:
-  - `variables`: list of prompts and defaults
-  - `pre_gen`: commands to run before generating files
-  - `post_gen`: commands to run after
+  - `variables`: prompts the user for values
+  - `pre_gen`: commands to run *before* generating files
+  - `post_gen`: commands to run *after* generation
 
 ---
 
-## Contributing
+## 🔧 Supported Pickers
 
-Contributions are welcome!
+Scaffold supports the following pickers:
+
+| Picker       | Config Value | Required Plugin                         |
+|--------------|--------------|------------------------------------------|
+| Telescope    | `"telescope"`| `nvim-telescope/telescope.nvim`         |
+| FZF-Lua      | `"fzf-lua"`  | `ibhagwan/fzf-lua`                      |
+| Mini.pick    | `"mini.pick"`| `echasnovski/mini.pick`                 |
+| Snacks.nvim  | `"snacks"`   | `tamton-aquib/snacks.nvim`             |
+
+Switch pickers anytime by changing the `picker` in your setup.
+
+---
+
+## 🛠 Contributing
+
+Contributions are welcome and appreciated!
 
 ### To contribute:
 
-1. Fork the repo
-2. Add features or fix bugs
-3. Open a pull request with a clear description
-4. Bonus: Add a test template in `project_templates.json`
+1. Fork this repository
+2. Create your feature branch
+3. Add your changes (features, fixes, templates, etc.)
+4. Open a PR with a clear explanation
+
+Bonus: add a test template to `project_templates.json` to demonstrate your feature 🚀
 
